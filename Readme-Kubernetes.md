@@ -65,3 +65,6 @@ $ kubectl get pods -A
 
 -- delete ns
 $ kubectl delete ns miespacio
+
+-- create deployment interactive 
+$ kubectl --dry-run=client -o yaml create deploy --image=nginx:latest  nginx-deployment > deployment.yaml
