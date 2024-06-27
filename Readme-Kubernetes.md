@@ -46,3 +46,22 @@ $ kubectl get pods --show-labels -l pagina_web
 ** Exec **
 $ kubectl exec nginx ls 
 $ kubectl -it exec nginx bash
+
+
+*** Aumentar number of replics 
+$ kubectl scale rc nginx --replicas=10 (create 10 replics)
+
+** crate namespaces 
+$ kubectl create ns prueba 
+
+** create file with ns
+$ kubectl create ns miespacio --dry-run=client -o yaml
+
+-- create pod in the namespace 
+$ kubectl apply -f pod_prueba -n miespacio 
+
+-- show all pods all namespaces
+$ kubectl get pods -A
+
+-- delete ns
+$ kubectl delete ns miespacio
