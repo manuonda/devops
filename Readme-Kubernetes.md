@@ -68,3 +68,40 @@ $ kubectl delete ns miespacio
 
 -- create deployment interactive 
 $ kubectl --dry-run=client -o yaml create deploy --image=nginx:latest  nginx-deployment > deployment.yaml
+
+
+-- increment replicas deployment 
+$ kubectl scale deployment nginx-deployment --replicas=6
+
+
+--rollback
+$ kubectl rollout history deployment nginx-deployment 
+
+-- show reivison
+$ kubectl rollout history deployment nginx-deployment --revision=1
+
+-- rollback revision
+$ kubectl rollout undo deploymeng nginx-deployment --to-revision=2
+
+-- status rollout 
+$ kubectl rollout status deployment nginx-deployment 
+
+-- etiquetar deployment
+$ kubectl annotate deployment nginx-deployment kubernetes.io/change-cause="Version 1.2
+
+--setear image 
+$ kubectl set image deployment nginx-deployment nginx=nginx:1.21
+
+-- config maps create 
+$ kubectl create configmap test-cm --from-literal variable1=valor1
+
+
+-- secrets
+$ kubectl get secrets 
+
+-- all secrets space 
+$ kubectl get secrets -A
+
+-- create secret 
+$ kubectl create secret generic credenciales --from-file=username.txt --from-file=password.txt
+
