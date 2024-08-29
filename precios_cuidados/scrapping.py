@@ -12,9 +12,12 @@ cursor = conn.cursor()
 
 # Crea una tabla para almacenar los datos si no existe
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS precios (
+    CREATE TABLE IF NOT EXISTS precios_claro_tbl (
         nombre TEXT PRIMARY KEY,
-        descripcion TEXT
+        etiqueta TEXT,
+        descripcion TEXT,
+        fecha_carga TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        fecha_actualizacion TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
     )
 ''')
 conn.commit()
@@ -40,8 +43,8 @@ if response.status_code == 200:
             print(f'Paquete encontrado: {nombre} - {descripcion}')
 
             # Verifica si los datos ya existen en la base de datos
-            #cursor.execute('SELECT * FROM precios WHERE nombre = ?', (nombre,))
-            #resultado = cursor.fetchone()
+            cursor.execute('SELECT * FROM precios WHERE nombre = ?', (nombre,))
+            resultado = cursor.fetchone()
 
             resultado = None
             if not resultado:
