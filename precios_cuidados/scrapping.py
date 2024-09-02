@@ -43,10 +43,11 @@ if response.status_code == 200:
         if package_info:
             nombre = package_info.find('h3').text.strip()
             descripcion = package_info.find('p').text.strip()
-            print(f'Paquete encontrado: {nombre} - {descripcion}')
+            print(f'Informacion de nombre + description: {nombre} - {descripcion}')
+            nombre_description = nombre + ' - ' + descripcion
 
             # Verificar si los datos ya existen en la base de datos
-            cursor.execute('SELECT * FROM precios_cuidado_pagina WHERE title_descarga = ?', (nombre,))
+            cursor.execute('SELECT * FROM precios_cuidado_pagina WHERE title_descarga = ? and status= ? ', (nombre_description, 'PROCESADO'))
             resultado = cursor.fetchone()
 
             if not resultado:  # Si no se encontró el resultado
@@ -70,16 +71,17 @@ if response.status_code == 200:
                             if not os.path.exists(dir_archivo):
                                 os.makedirs(dir_archivo)
 
+                            
+                            
                             # Guardar el archivo en el directorio determinado 
                             with open(nombre_archivo, 'wb') as f:
-                                # Guardar el archivo en el directorio determinado 
                                 f.write(archivo_response.content)
                                 
                             print(f'Archivo {nombre_archivo} descargado con éxito.')
 
                             # Obtener la fecha y hora actual
                             fecha_alta = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            status = "ACTIVO"  # Definir el estado
+                            status = "PROCESADO"  # Definir el estado
 
                             # Insertar los datos en la base de datos
                             cursor.execute('INSERT INTO precios_cuidado_pagina (title_descarga, descripcion, nombre_archivo, status, fecha_alta) VALUES (?, ?, ?, ?, ?)',
@@ -89,7 +91,7 @@ if response.status_code == 200:
                         else:
                             print('No se encontró el enlace de descarga.')
             else:
-                print(f'El paquete {nombre} ya existe en la base de datos.')
+                print(f'El archivo de descarga {nombre} ya existe en la base de datos.')
 else:
     print(f'Error al acceder a la página: {response.status_code}')
 
@@ -133,5 +135,3 @@ def descomprimir_archivo(pathArchivo):
     
 
 
-if __name__ == '__main__':
-    descargar_archivos(url, directory)
