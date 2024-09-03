@@ -4,3 +4,7 @@ precios_cuidados/sepa_info/
 precios_cuidados/sepa_jueves.zip
 
 precios_cuidados/data_files/
+
+precios_cuidados/.venv/
+
+precios_cuidados/__pycache__/
