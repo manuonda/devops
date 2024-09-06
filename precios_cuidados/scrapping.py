@@ -106,8 +106,11 @@ if response.status_code == 200:
                                 archivo_response = requests.get(url_descarga)
                                 archivo_response.raise_for_status()  # Esto lanzará una excepción si hay un error
 
+                                nombre_concat_description = nombre_concat_description.replace('/', '-').replace('\\', '-')
                                 nombre_archivo_extension = os.path.basename(urlparse(url_descarga).path)
                                 nombre_archivo = os.path.join(directory, nombre_concat_description + "." + nombre_archivo_extension)
+
+                                print(f'Guardando archivo en: {nombre_archivo}')
 
                                 # Guardar el archivo en el directorio determinado 
                                 with open(nombre_archivo, 'wb') as f:
