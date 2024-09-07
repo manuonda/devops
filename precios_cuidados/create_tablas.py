@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DECIMAL, VARCHAR, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.types import CHAR
+from sqlalchemy.types import CHAR, DateTime
 
 Base = declarative_base()
 
@@ -16,6 +16,10 @@ class Comercio(Base):
     comercio_bandera_url = Column(String(255), nullable=False)
     comercio_ultima_actualizacion = Column(TIMESTAMP(timezone=True), nullable=False)
     comercio_version_sepa = Column(String(10), nullable=False)
+    fecha_alta = Column(DateTime)
+    usuario_alta = Column(Text)
+    fecha_modificacion = Column(DateTime)
+    usuario_modificacion = Column(Text)
 
 class Producto(Base):
     __tablename__ = 'productos'
@@ -34,6 +38,10 @@ class Producto(Base):
     productos_cantidad_referencia = Column(DECIMAL(10, 2), nullable=False)
     productos_unidad_medida_referencia = Column(String(10), nullable=False)
     productos_precio_unitario_promo1 = Column(DECIMAL(10, 2), nullable=True)
+    fecha_alta = Column(DateTime)
+    usuario_alta = Column(Text)
+    fecha_modificacion = Column(DateTime)
+    usuario_modificacion = Column(Text)
 
 class Sucursal(Base):
     __tablename__ = 'sucursales'
@@ -53,8 +61,22 @@ class Sucursal(Base):
     sucursales_viernes_horario_atencion = Column(String(20), nullable=True)
     sucursales_sabado_horario_atencion = Column(String(20), nullable=True)
     sucursales_domingo_horario_atencion = Column(String(20), nullable=True)
+    fecha_alta = Column(DateTime)
+    usuario_alta = Column(Text)
+    fecha_modificacion = Column(DateTime)
+    usuario_modificacion = Column(Text)
 
 
-def initialize_database():
-    engine = create_engine('sqlite:///mydatabase.db')  # Reemplaza con la URL de tu base de datos
-    Base.metadata.create_all(engine)
+class PreciosCuidadosHistorial(Base):
+    __tablename__ = 'precios_cuidados_historial'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title_descarga = Column(Text)
+    descripcion = Column(Text)
+    nombre_archivo = Column(Text)
+    status = Column(Text)
+    fecha_alta = Column(DateTime)
+    usuario_alta = Column(Text)
+    fecha_modificacion = Column(DateTime)
+    usuario_modificacion = Column(Text)
+
+

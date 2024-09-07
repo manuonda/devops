@@ -5,60 +5,23 @@ import sqlite3
 import datetime
 from urllib.parse import urlparse
 import zipfile
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from create_tablas import Comercio, Producto, Base , PreciosCuidadosHistorial
+from unzip_file import descomprimir_archivo
 
-def descomprimir_archivo(pathArchivo):
-    """
-    Descomprime el archivo zip y extrae los archivos csv
-    """
-    # Crear un directorio para el archivo
-    directorio = os.path.dirname(pathArchivo)
-    nombre_archivo = os.path.basename(pathArchivo)
-    nombre_directorio = os.path.splitext(nombre_archivo)[0]
-    directorio_archivo = os.path.join(directorio, nombre_directorio)
+print("Iniciando scrapping")
 
-    if not os.path.exists(directorio_archivo):
-        os.makedirs(directorio_archivo)
+#Crear el motor SQLAlchemy y la session 
+engine = create_engine('sqlite:///precios_cuidado.db')
+Session = sessionmaker(bind=engine)
+session = Session()
 
-    # Abrir el archivo zip
-    with zipfile.ZipFile(pathArchivo, 'r') as zip_ref:
-        # Extraer los archivos del zip
-        zip_ref.extractall(directorio_archivo)
-
-    # Recorrer el directorio de los archivos y leer los csv
-    for root, dirs, files in os.walk(directorio_archivo):
-        for file in files:
-            print(f'leyendo archivo: {file}')
-            if file.endswith('.zip'):
-                # Descomprimir los archivos zip
-                path_archivo = os.path.join(root, file)
-                with zipfile.ZipFile(path_archivo, 'r') as zip_ref:
-                    zip_ref.extractall(root)
-            elif file.endswith('.csv'):
-                # Leer los archivos csv
-                path_archivo = os.path.join(root, file)
-                print(f'leyendo archivo: {path_archivo}')
+# Crear todas las tablas definidas en los modelos
+Base.metadata.create_all(engine)
 
 url = "https://datos.produccion.gob.ar/dataset/sepa-precios"  # URL de la página
 
-# Configuración de la conexión a la base de datos
-conn = sqlite3.connect('base_de_datos.db')
-cursor = conn.cursor()
-
-# Crear la tabla si no existe
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS precios_cuidado_pagina (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title_descarga TEXT,
-        descripcion TEXT,
-        nombre_archivo TEXT,
-        status TEXT,
-        fecha_alta TEXT
-    )
-''')
-conn.commit()
-
-# Truncar la tabla
-cursor.execute('DELETE FROM precios_cuidado_pagina')
 
 # Hacer una petición GET a la URL
 response = requests.get(url)
@@ -74,10 +37,10 @@ if response.status_code == 200:
     divs = soup.find_all('div', class_='pkg-container')
 
     # Mostrar los registros de la tabla
-    cursor.execute('SELECT * FROM precios_cuidado_pagina')
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
+    #cursor.execute('SELECT * FROM precios_cuidado_pagina')
+    #rows = cursor.fetchall()
+    #for row in rows:
+    #    print(row)
 
     for div in divs:
         # Información del paquete
@@ -86,11 +49,15 @@ if response.status_code == 200:
             nombre = package_info.find('h3').text.strip()
             descripcion = package_info.find('p').text.strip()
             nombre_concat_description = nombre + ' - ' + descripcion
+            print('----------------------------------')
+            print(f'nombre: {nombre}  - descripcion : {descripcion} - nombre_concat_description: {nombre_concat_description}')
 
             # Verificar si los datos ya existen en la base de datos
-            cursor.execute('SELECT * FROM precios_cuidado_pagina WHERE title_descarga = ? and status= ? ', (nombre_concat_description, 'PROCESADO'))
-            resultado = cursor.fetchone()
-
+            # cursor.execute('SELECT * FROM precios_cuidado_pagina WHERE title_descarga = ? and status= ? ', (nombre_concat_description, 'PROCESADO'))
+            # resultado = cursor.fetchone()
+            
+            resultado = session.query(PreciosCuidadosHistorial).filter(PreciosCuidadosHistorial.title_descarga == nombre_concat_description, PreciosCuidadosHistorial.status == 'PROCESADO').first()
+            
             if not resultado:  # Si no se encontró el resultado
                 div_actions = div.find('div', class_='pkg-actions')
                 if div_actions:
@@ -120,8 +87,10 @@ if response.status_code == 200:
 
                                 # Descomprimir el archivo zip si es necesario
                                 if nombre_archivo_extension.endswith('.zip'):
-                                    descomprimir_archivo(nombre_archivo)
-
+                                    directorio_archivo = descomprimir_archivo(nombre_archivo, ejecutar_descompresion=True)  # Asegúrate de pasar False para ejecutar_descompresion
+                                    print(f'Directorio descomprimido: {directorio_archivo}')
+                                    leer_csv(directorio_archivo)
+                                    
                                 # Obtener la fecha y hora actual
                                 fecha_alta = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                 status = "PROCESADO"  # Definir el estado
@@ -134,11 +103,11 @@ if response.status_code == 200:
                             except requests.RequestException as e:
                                 print(f'Error al descargar el archivo desde {url_descarga}: {e}')
                         else:
-                            print('No se encontró el enlace de descarga.')
+                            print('No se encontró el enlace de descarga. Etiqueta "DESCARGAR"')
             else:
-                print(f'El archivo de descarga {nombre} ya existe en la base de datos.')
+                print(f'El archivo de descarga {nombre_concat_description} ya existe en la base de datos.')
 else:
     print(f'Error al acceder a la página: {response.status_code}')
 
 # Cerrar la conexión a la base de datos
-conn.close()
+session.close()
