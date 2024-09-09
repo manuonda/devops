@@ -36,11 +36,7 @@ if response.status_code == 200:
     soup = BeautifulSoup(response.content, 'html.parser')
     divs = soup.find_all('div', class_='pkg-container')
 
-    # Mostrar los registros de la tabla
-    #cursor.execute('SELECT * FROM precios_cuidado_pagina')
-    #rows = cursor.fetchall()
-    #for row in rows:
-    #    print(row)
+
 
     for div in divs:
         # Información del paquete
@@ -89,7 +85,7 @@ if response.status_code == 200:
                                 if nombre_archivo_extension.endswith('.zip'):
                                     directorio_archivo = descomprimir_archivo(nombre_archivo, ejecutar_descompresion=True)  # Asegúrate de pasar False para ejecutar_descompresion
                                     print(f'Directorio descomprimido: {directorio_archivo}')
-                                    leer_csv(directorio_archivo)
+                                    #leer_csv(directorio_archivo)
                                     
                                 # Obtener la fecha y hora actual
                                 fecha_alta = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
