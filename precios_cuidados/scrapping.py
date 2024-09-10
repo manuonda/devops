@@ -9,16 +9,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from create_tablas import Comercio, Producto, Base , PreciosCuidadosHistorial
 from unzip_file import descomprimir_archivo
+from read_file_csv import leer_csv
 
 print("Iniciando scrapping")
 
-#Crear el motor SQLAlchemy y la session 
-engine = create_engine('sqlite:///precios_cuidado.db')
-Session = sessionmaker(bind=engine)
-session = Session()
 
-# Crear todas las tablas definidas en los modelos
-Base.metadata.create_all(engine)
 
 url = "https://datos.produccion.gob.ar/dataset/sepa-precios"  # URL de la página
 
@@ -85,7 +80,7 @@ if response.status_code == 200:
                                 if nombre_archivo_extension.endswith('.zip'):
                                     directorio_archivo = descomprimir_archivo(nombre_archivo, ejecutar_descompresion=True)  # Asegúrate de pasar False para ejecutar_descompresion
                                     print(f'Directorio descomprimido: {directorio_archivo}')
-                                    #leer_csv(directorio_archivo)
+                                    leer_csv(directorio_archivo)
                                     
                                 # Obtener la fecha y hora actual
                                 fecha_alta = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -105,5 +100,4 @@ if response.status_code == 200:
 else:
     print(f'Error al acceder a la página: {response.status_code}')
 
-# Cerrar la conexión a la base de datos
-session.close()
+

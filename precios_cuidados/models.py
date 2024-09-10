@@ -21,6 +21,10 @@ class Comercio(Base):
     fecha_modificacion = Column(DateTime)
     usuario_modificacion = Column(Text)
 
+    def insert_comercio(self, session):
+        session.add(self)
+        session.commit()
+
 class Producto(Base):
     __tablename__ = 'productos'
 
