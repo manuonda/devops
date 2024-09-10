@@ -51,23 +51,31 @@ def read_file_comercio_csv(path_archivo):
 
 
 
-def leer_csv(path_archivo):
-    """Función para leer un archivo CSV y mostrar su contenido con formato específico"""
-    print(f"Leyendo archivo csv : {path_archivo}")
-    input("Presiona Enter para continuar....")
+def leer_directorio(path_directorio):
+    """Función para leer archivos CSV en un directorio y procesarlos según su tipo"""
+    print(f"Leyendo archivos en el directorio: {path_directorio}")
+    
+    for filename in os.listdir(path_directorio):
+        if filename.endswith('.csv'):
+            file_path = os.path.join(path_directorio, filename)
+            print(f"Procesando archivo: {filename}")
+            
+            if filename.endswith('comercio.csv'):
+                print("Es un archivo de comercio")
+                read_file_comercio_csv(file_path)
+            elif filename.endswith('productos.csv'):
+                print("Es un archivo de productos")
+                # Aquí puedes llamar a una función para procesar archivos de productos
+            elif filename.endswith('precios.csv'):
+                print("Es un archivo de precios")
+                # Aquí puedes llamar a una función para procesar archivos de precios
+            else:
+                print("No se reconoce el tipo de archivo CSV")
+            
+            print("--------------------")
 
-    # Establecemos que tipo de archivo es comercio.csv , productos.csv o precios.cvs
-    if path_archivo.endswith('comercio.csv'):
-        print("Es un archivo de comercio")
-        read_file_comercio_csv(path_archivo)
-    elif path_archivo.endswith('productos.csv'):
-        print("Es un archivo de productos")
-    elif path_archivo.endswith('precios.csv'):
-        print("Es un archivo de precios")
-    else:
-        print("No se reconoce el archivo")
-
-
+# Uso de la función
+#leer_directorio('/ruta/al/directorio')
 # Ejemplo de uso
-leer_csv('/home/manuonda/projects/devops/precios_cuidados/data_files/Jueves - Precios SEPA Minoristas jueves, 05-09-2024.sepa_jueves/sepa_1_comercio-sepa-3_2024-09-05_09-05-12/comercio.csv')
+#leer_csv('/home/manuonda/projects/devops/precios_cuidados/data_files/Jueves - Precios SEPA Minoristas jueves, 05-09-2024.sepa_jueves/sepa_1_comercio-sepa-3_2024-09-05_09-05-12/comercio.csv')
 

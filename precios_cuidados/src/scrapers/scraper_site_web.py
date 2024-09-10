@@ -7,17 +7,16 @@ from urllib.parse import urlparse
 import zipfile
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from create_tablas import Comercio, Producto, Base , PreciosCuidadosHistorial
 from unzip_file import descomprimir_archivo
-from read_file_csv import leer_directorio
-from models import PreciosCuidadosHistorial
-from db import get_session
+from read_file_csv import leer_csv
 
 print("Iniciando scrapping")
 
 
 
 url = "https://datos.produccion.gob.ar/dataset/sepa-precios"  # URL de la página
-session = get_session()
+
 
 # Hacer una petición GET a la URL
 response = requests.get(url)
@@ -79,18 +78,18 @@ if response.status_code == 200:
 
                                 # Descomprimir el archivo zip si es necesario
                                 if nombre_archivo_extension.endswith('.zip'):
-                                    directorio_descomprimido = descomprimir_archivo(nombre_archivo, ejecutar_descompresion=True)  # Asegúrate de pasar False para ejecutar_descompresion
-                                    print(f'Directorio descomprimido: {directorio_descomprimido}')
-                                    leer_directorio(directorio_descomprimido)
+                                    directorio_archivo = descomprimir_archivo(nombre_archivo, ejecutar_descompresion=True)  # Asegúrate de pasar False para ejecutar_descompresion
+                                    print(f'Directorio descomprimido: {directorio_archivo}')
+                                    leer_csv(directorio_archivo)
                                     
                                 # Obtener la fecha y hora actual
                                 fecha_alta = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                 status = "PROCESADO"  # Definir el estado
 
                                 # Insertar los datos en la base de datos
-                               # cursor.execute('INSERT INTO precios_cuidado_pagina (title_descarga, descripcion, nombre_archivo, status, fecha_alta) VALUES (?, ?, ?, ?, ?)',
-                               #                (nombre_concat_description, descripcion.replace('\n', ' '), nombre_archivo, status, fecha_alta))
-                                #conn.commit()
+                                cursor.execute('INSERT INTO precios_cuidado_pagina (title_descarga, descripcion, nombre_archivo, status, fecha_alta) VALUES (?, ?, ?, ?, ?)',
+                                               (nombre_concat_description, descripcion.replace('\n', ' '), nombre_archivo, status, fecha_alta))
+                                conn.commit()
 
                             except requests.RequestException as e:
                                 print(f'Error al descargar el archivo desde {url_descarga}: {e}')
