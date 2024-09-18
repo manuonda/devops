@@ -1,0 +1,9 @@
+apiVersion: 1.0
+kind: Pod
+metadata:
+  name: myapp-deployment
+  labels:
+    app: myapp
+
+spec:
+  
