@@ -1,6 +1,7 @@
 # read_file_csv.py
 
 import csv
+import os
 from models import Comercio
 from datetime import datetime
 from db import get_session
@@ -55,25 +56,32 @@ def leer_directorio(path_directorio):
     """Función para leer archivos CSV en un directorio y procesarlos según su tipo"""
     print(f"Leyendo archivos en el directorio: {path_directorio}")
     
-    for filename in os.listdir(path_directorio):
-        if filename.endswith('.csv'):
-            file_path = os.path.join(path_directorio, filename)
-            print(f"Procesando archivo: {filename}")
-            
-            if filename.endswith('comercio.csv'):
-                print("Es un archivo de comercio")
-                read_file_comercio_csv(file_path)
-            elif filename.endswith('productos.csv'):
-                print("Es un archivo de productos")
-                # Aquí puedes llamar a una función para procesar archivos de productos
-            elif filename.endswith('precios.csv'):
-                print("Es un archivo de precios")
-                # Aquí puedes llamar a una función para procesar archivos de precios
-            else:
-                print("No se reconoce el tipo de archivo CSV")
+    for directory in os.listdir(path_directorio):
+        print("directory: ", directory)
+        if os.path.isdir(directory):
+            print(f"Es un directorio: {directory}")
+            for filecsv in os.listdir(directory) : 
+                if filecsv.endswith('.csv'):
+                    file_path = os.path.join(path_directorio, directory, filecsv)
+                    print(f"Procesando archivo: {filecsv}")
+                    if filecsv.endswith('comercio.csv'):
+                        print("Es un archivo de comercio")
+                        read_file_comercio_csv(file_path)
+                    elif filecsv.endswith('productos.csv'):
+                        print("Es un archivo de productos")
+                        # Aquí puedes llamar a una función para procesar archivos de productos
+                    elif filecsv.endswith('precios.csv'):
+                        print("Es un archivo de precios")
+                        # Aquí puedes llamar a una función para procesar archivos de precios
+                    else:
+                        print("No se reconoce el tipo de archivo CSV")
+                    
+                    print("--------------------")
             
             print("--------------------")
-
+        else:
+            print(f"No es un directorio: {directory}")
+            print("--------------------")
 # Uso de la función
 #leer_directorio('/ruta/al/directorio')
 # Ejemplo de uso
