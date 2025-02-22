@@ -1,0 +1,9 @@
+services:
+  app:
+    container_name: app
+    image: manuonda/prueba:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8086:5000
