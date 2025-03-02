@@ -8,3 +8,10 @@ jobs:
     steps:
       - name : Hola mundo 
         run : echo "Hola mundo"
+
+  other:
+    runs-on: ubuntu-latest
+    steps:
+      - name: other mundo 
+        run : ls -a
+  
