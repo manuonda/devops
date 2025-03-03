@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "hola mundo" >> hola.txt
           cat hola.txt
-          apt-get install 
+          sudo apt-get install 
       - name: ejecuta-script 
         run: |
           chmod +x script.sh
