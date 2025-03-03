@@ -39,3 +39,9 @@ jobs:
       - name: ejecuta-script 
         run: |
           chmod +x script.sh
+
+      - name: Setup Node.js environment
+        run: actions/setup-node@v4.0.3
+
+      - name: Version node
+        run: node --version
