@@ -90,3 +90,11 @@ jobs:
         env:
           MY_VAR_2: "Hola mundo environment 2"
         run: echo $MY_VAR_2
+  
+  secrets_variables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test vars environment
+        run: echo ${{ vars.MY_VARIABLE_SPACE }}
+      - name : Test secrets 
+        run: echo ${{ secrets.MY_SECRET_SPACE }}
