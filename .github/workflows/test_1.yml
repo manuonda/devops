@@ -3,7 +3,7 @@ name: Hola mundo
 #on : [push, pull_request]
 on:
   push:
-    branches: [push, pull_request]
+    branches: [push]
 
 jobs:
   hola: 
