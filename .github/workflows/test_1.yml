@@ -35,6 +35,7 @@ jobs:
           echo "hola mundo" >> hola.txt
           cat hola.txt
           sudo apt-get install -y tree
+          ls -al
       - name: ejecuta-script 
         run: |
           chmod +x script.sh
