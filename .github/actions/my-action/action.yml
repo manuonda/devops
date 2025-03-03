@@ -6,3 +6,4 @@ runs:
   steps:
     - name: Hola mundo My action
       run: echo "Hola mundo desde action"
+      shell: bash
