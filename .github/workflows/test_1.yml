@@ -1,9 +1,6 @@
 name: Hola mundo 
 
-#on : [push, pull_request]
-on:
-  push:
-    branches: [push]
+on : [push, pull_request]
 
 jobs:
   hola: 
@@ -33,10 +30,11 @@ jobs:
       - name: Checkout 
         uses: actions/checkout@v4.2.2
 
-      - name: ls-2
+      - name: ls 
         run: |
           echo "hola mundo" >> hola.txt
           cat hola.txt
-      - name: ejecuta-script-one
+          sudo apt-get install -y tree
+      - name: ejecuta-script 
         run: |
           chmod +x script.sh
