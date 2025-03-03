@@ -75,3 +75,18 @@ jobs:
     steps:
      - name: Test
        run: ls -al      
+  
+  entorno:
+    runs-on: ubuntu-latest
+    env:
+      MY_VAR: "Hola mundo environment"
+    
+    steps:
+      - name: Test
+        run: echo $MY_VAR
+      - name: Test 2
+         run: echo "Hola mundo ${MY_VAR}"
+      - name: Test 3
+        env:
+          MY_VAR_2: "Hola mundo environment 2"
+        run: echo $MY_VAR_2
