@@ -1,6 +1,6 @@
 name: Hola mundo 
 
-on : [push, pull_request]
+on: [push, pull_request]
 
 jobs:
   hola: 
@@ -73,8 +73,8 @@ jobs:
           - 3306:3306
 
     steps:
-     - name: Test
-       run: ls -al      
+      - name: Test
+        run: ls -al      
   
   entorno:
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
       - name: Test
         run: echo $MY_VAR
       - name: Test 2
-         run: echo "Hola mundo ${MY_VAR}"
+        run: echo "Hola mundo ${MY_VAR}"
       - name: Test 3
         env:
           MY_VAR_2: "Hola mundo environment 2"
