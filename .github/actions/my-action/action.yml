@@ -4,5 +4,5 @@ description: "Test my action"
 runs:
   using: "composite"
   steps:
-     - name: Hola mundo My action
-       run: echo "Hola mundo desde action"
+    - name: Hola mundo My action
+      run: echo "Hola mundo desde action"
